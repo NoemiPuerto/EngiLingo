@@ -9,10 +9,28 @@ class Question {
       required this.options,
       required this.correctOptionIndex,
       required this.level});
+
+  String serialize() {
+    return '$questionText|${options.join(',')}|$correctOptionIndex|$level';
+  }
+
+  static Question deserialize(String serialized) {
+    final parts = serialized.split('|');
+    final questionText = parts[0];
+    final options = parts[1].split(',');
+    final correctOptionIndex = int.parse(parts[2]);
+    final level = int.parse(parts[3]);
+    return Question(
+      questionText: questionText,
+      options: options,
+      correctOptionIndex: correctOptionIndex,
+      level: level,
+    );
+  }
 }
 
 List<Question> getQuestions() {
-  return [
+  List<Question> questions = [
     Question(
       questionText: 'How do you say "Cálculo Integral" in English?',
       options: [
@@ -344,4 +362,5 @@ List<Question> getQuestions() {
       level: 1,
     ),
   ];
+  return questions;
 }

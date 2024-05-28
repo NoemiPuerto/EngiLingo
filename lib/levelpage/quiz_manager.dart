@@ -14,17 +14,27 @@ class QuizManager {
 
   List<Question> getRandomQuestionsFromList(
       int count, List<Question> questions) {
+    List<Question> validQuestions =
+        questions.where((q) => _isValidQuestion(q)).toList();
+
+    // Asegurarse de que el número de preguntas válidas no sea menor que el número solicitado
+    if (validQuestions.length < count) {
+      count = validQuestions.length;
+    }
+
     List<Question> randomQuestions = [];
+    List<int> randomIndices = _getRandomIndices(count, validQuestions.length);
 
-    // Obtener una lista aleatoria de índices únicos
-    List<int> randomIndices = _getRandomIndices(count, questions.length);
-
-    // Seleccionar preguntas aleatorias usando los índices
-    randomIndices.forEach((index) {
-      randomQuestions.add(questions[index]);
-    });
+    for (int index in randomIndices) {
+      randomQuestions.add(validQuestions[index]);
+    }
 
     return randomQuestions;
+  }
+
+  bool _isValidQuestion(Question question) {
+    return question.correctOptionIndex >= 0 &&
+        question.correctOptionIndex < question.options.length;
   }
 
   List<int> _getRandomIndices(int count, int max) {
